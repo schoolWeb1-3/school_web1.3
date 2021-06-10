@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.second.dao.CourseDao">
+    <resultMap id="BaseResultMap" type="com.example.second.entity.Course">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="subject" property="subject" jdbcType="VARCHAR"/>
+        <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="stick" property="stick" jdbcType="BIT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, icon, title, subject, author,stick
+    </sql>
+
+    <select id="findAllCourses" resultType="com.example.second.entity.Course">
+        select * from course
+    </select>
+
+    <select id="findCourseByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from course where title = #{title,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteCoursesByIds">
+        delete from course where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from course
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteCourseById" parameterType="java.lang.Long">
+        delete from course
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.second.entity.Course">
+        insert into course (id, icon, title, subject, author, stick)
+        values (#{id,jdbcType=BIGINT}, #{icon,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR},
+                #{subject,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{stick,jdbcType=BIT})
+    </insert>
+    <insert id="addCourse" parameterType="com.example.second.entity.Course">
+        insert into course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="icon != null">
+                icon,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="subject != null">
+                subject,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="stick != null">
+                stick,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="icon != null">
+                #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="subject != null">
+                #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="stick != null">
+                #{stick,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateCourse" parameterType="com.example.second.entity.Course">
+        update course
+        <set>
+            <if test="icon != null">
+                icon = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="subject != null">
+                subject = #{subject,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                author  = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="stick != null">
+                stick = #{stick,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.second.entity.Course">
+        update course
+        set icon = #{icon,jdbcType=VARCHAR},
+            title = #{title,jdbcType=VARCHAR},
+            subject = #{subject,jdbcType=VARCHAR},
+            author = #{author,jdbcType=VARCHAR},
+            stick = #{stick,jdbcType=BIT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

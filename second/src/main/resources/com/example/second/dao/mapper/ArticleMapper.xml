@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.second.dao.ArticleDao">
+    <resultMap id="BaseResultMap" type="com.example.second.entity.Article">
+        <id column="uid" property="uid" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="colname" property="colname" jdbcType="VARCHAR"/>
+        <result column="creationdate" property="creationdate" jdbcType="DATE"/>
+        <result column="top" property="top" jdbcType="BIT"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        uid, name, author, colname, creationdate, top
+    </sql>
+
+    <select id="findAllArticles" resultType="com.example.second.entity.Article">
+        select * from article
+    </select>
+
+    <select id="findArticleByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from article where name = #{name,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteArticlesByIds">
+        delete from article where uid in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from article
+        where uid = #{uid,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteArticleById" parameterType="java.lang.Long">
+        delete from article
+        where uid = #{uid,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.second.entity.Article">
+        insert into article (uid, name, author, colname, creationdate, top)
+        values (#{uid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR},
+                #{colname,jdbcType=VARCHAR}, #{creationdate,jdbcType=DATE}, #{top,jdbcType=BIT})
+    </insert>
+    <insert id="addArticle" parameterType="com.example.second.entity.Article">
+        insert into article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="colname != null">
+                colname,
+            </if>
+            <if test="creationdate != null">
+                creationdate,
+            </if>
+            <if test="top != null">
+                top,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="colname != null">
+                #{colname,jdbcType=VARCHAR},
+            </if>
+            <if test="creationdate != null">
+                #{creationdate,jdbcType=DATE},
+            </if>
+            <if test="top != null">
+                #{top,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateArticle" parameterType="com.example.second.entity.Article">
+        update article
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                author = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="colname != null">
+                colname = #{colname,jdbcType=VARCHAR},
+            </if>
+            <if test="creationdate != null">
+                creationdate  = #{creationdate,jdbcType=DATE},
+            </if>
+            <if test="top != null">
+                top = #{top,jdbcType=BIT},
+            </if>
+        </set>
+        where uid = #{uid,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.second.entity.Article">
+        update article
+        set name = #{name,jdbcType=VARCHAR},
+            author = #{author,jdbcType=VARCHAR},
+            colname = #{colname,jdbcType=VARCHAR},
+            creationdate = #{creationdate,jdbcType=DATE},
+            top = #{top,jdbcType=BIT}
+        where uid = #{uid,jdbcType=BIGINT}
+    </update>
+</mapper>
